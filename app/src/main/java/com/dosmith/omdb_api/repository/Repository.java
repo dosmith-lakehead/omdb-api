@@ -2,6 +2,7 @@ package com.dosmith.omdb_api.repository;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Movie;
 import android.widget.ImageView;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -10,6 +11,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.dosmith.omdb_api.models.MovieDetails;
 import com.dosmith.omdb_api.models.SearchResult;
 import com.dosmith.omdb_api.utilities.VolleySingleton;
 import com.google.gson.Gson;
@@ -30,7 +32,8 @@ public class Repository {
 
     private static String searchMessage = "";
     private static ArrayList<SearchResult> searchResults;
-    private static ArrayList<Bitmap> posters;
+    private static MovieDetails movieDetails;
+
 
 
     public static void setContext(Context ctx){
@@ -46,8 +49,8 @@ public class Repository {
     public static ArrayList<SearchResult> getSearchResults(){
         return searchResults;
     }
-    public static ArrayList<Bitmap> getPosters(){
-        return posters;
+    public static MovieDetails getMovieDetails(){
+        return movieDetails;
     }
 
 
@@ -133,6 +136,46 @@ public class Repository {
         else {
             searchResults.set(i, searchResult);
         }
+    }
+
+    public static void setMovieDetails(SearchResult movie){
+        activeReqCount += 1;
+        movieDetails = null;
+        StringBuilder urlBuilder = new StringBuilder();
+        urlBuilder.append("https://www.omdbapi.com/?apikey=2904fe35&i=");
+        urlBuilder.append(movie.getImdbID());
+        String url = urlBuilder.toString();
+
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Gson gson = new Gson();
+                try {
+                    if (!response.getBoolean("Response")){
+                        searchMessage = "An unexpected error occurred. The IMDB ID related to this movie does not have a related page.";
+                    }
+                    else {
+                        movieDetails = gson.fromJson(response.toString(), MovieDetails.class);
+                    }
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                finally {
+                    activeReqCount -= 1;
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                searchMessage = "An error occurred.";
+                activeReqCount -= 1;
+            }
+        });
+        getRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        VolleySingleton.getInstance(context).addToRequestQueue(getRequest);
     }
 
     public static void reset(){

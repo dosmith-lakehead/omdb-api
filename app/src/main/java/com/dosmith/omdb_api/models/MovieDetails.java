@@ -1,5 +1,7 @@
 package com.dosmith.omdb_api.models;
 
+import android.graphics.Bitmap;
+
 import com.google.gson.annotations.SerializedName;
 
 public class MovieDetails {
@@ -30,9 +32,10 @@ public class MovieDetails {
     @SerializedName("Awards")
     private String awards;
     @SerializedName("Poster")
-    private String poster;
+    private String posterURL;
+    private Bitmap posterImg;
     @SerializedName("Ratings")
-    private String[] ratings;
+    private Rating[] ratings;
     @SerializedName("Metascore")
     private String metascore;
     private String imdbRating;
@@ -105,8 +108,8 @@ public class MovieDetails {
         return plot;
     }
 
-    public String getPoster() {
-        return poster;
+    public String getPosterURL() {
+        return posterURL;
     }
 
     public String getProduction() {
@@ -117,7 +120,7 @@ public class MovieDetails {
         return rated;
     }
 
-    public String[] getRatings() {
+    public Rating[] getRatings() {
         return ratings;
     }
 
@@ -147,5 +150,13 @@ public class MovieDetails {
 
     public String getYear() {
         return year;
+    }
+
+    public Bitmap getPosterImg(){
+        return posterImg;
+    }
+
+    public void setPosterImg(Bitmap img){
+        posterImg = img;
     }
 }
