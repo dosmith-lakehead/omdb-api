@@ -1,5 +1,7 @@
 package com.dosmith.omdb_api.models;
 
+import android.graphics.Bitmap;
+
 import com.google.gson.annotations.SerializedName;
 
 public class SearchResult {
@@ -13,7 +15,9 @@ public class SearchResult {
     @SerializedName("Type")
     private String type;
     @SerializedName("Poster")
-    private String poster;
+    private String posterURL;
+
+    private Bitmap posterImg;
 
     public SearchResult(){
     }
@@ -22,8 +26,12 @@ public class SearchResult {
         return imdbID;
     }
 
-    public String getPoster() {
-        return poster;
+    public String getPosterURL() {
+        return posterURL;
+    }
+
+    public Bitmap getPosterImg() {
+        return posterImg;
     }
 
     public String getTitle() {
@@ -36,5 +44,9 @@ public class SearchResult {
 
     public String getYear() {
         return year;
+    }
+
+    public void setPosterImg(Bitmap bitmap){
+        posterImg = bitmap;
     }
 }
