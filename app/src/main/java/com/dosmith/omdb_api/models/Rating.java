@@ -4,9 +4,10 @@ public class Rating {
     private String Source;
     private String Value;
 
+    // Simple model to display ratings in the MovieDetails activity
+
     public Rating(){
     }
-
     public String getValue() {
         return Value;
     }

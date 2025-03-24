@@ -1,5 +1,6 @@
 package com.dosmith.omdb_api.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import com.dosmith.omdb_api.R;
 import com.dosmith.omdb_api.databinding.FragmentSearchFormBinding;
 import com.dosmith.omdb_api.databinding.FragmentSearchResultsBinding;
+import com.dosmith.omdb_api.models.SearchResult;
 import com.dosmith.omdb_api.utilities.SearchResultsAdapter;
 import com.dosmith.omdb_api.viewmodels.SearchActivityViewModel;
 
@@ -25,7 +27,7 @@ import com.dosmith.omdb_api.viewmodels.SearchActivityViewModel;
  * Use the {@link SearchResultsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchResultsFragment extends Fragment {
+public class SearchResultsFragment extends Fragment implements SearchResultsAdapter.SearchResultViewHolder.OnItemClickListener {
 
     FragmentSearchResultsBinding binding;
     SearchActivityViewModel viewModel;
@@ -33,7 +35,6 @@ public class SearchResultsFragment extends Fragment {
     SearchResultsAdapter adapter;
 
     public SearchResultsFragment() {
-        // Required empty public constructor
     }
 
     public static SearchResultsFragment newInstance() {
@@ -47,7 +48,7 @@ public class SearchResultsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(SearchActivityViewModel.class);
-        adapter = new SearchResultsAdapter(viewModel.getSearchResults().getValue());
+        adapter = new SearchResultsAdapter(viewModel.getSearchResults().getValue(), this);
     }
 
     @Override
@@ -98,5 +99,12 @@ public class SearchResultsFragment extends Fragment {
         });
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onItemClick(SearchResult searchResult) {
+        Intent intent = new Intent(this.getContext().getApplicationContext(), DetailsActivity.class);
+        intent.putExtra("imdbId", searchResult.getImdbID());
+        startActivity(intent);
     }
 }

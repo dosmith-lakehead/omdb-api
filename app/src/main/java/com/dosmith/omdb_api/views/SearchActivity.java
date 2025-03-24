@@ -47,7 +47,6 @@ public class SearchActivity extends AppCompatActivity implements SearchFormFragm
         LinearLayout.LayoutParams searchContainerParams = (LinearLayout.LayoutParams) binding.searchFormContainer.getLayoutParams();
         LinearLayout.LayoutParams spaceParams = (LinearLayout.LayoutParams) binding.filler.getLayoutParams();
 
-        // Create a ValueAnimator that will animate the height
         ValueAnimator animator;
         if (shrink){
             animator = ValueAnimator.ofFloat(1.0f, 0.0f);
@@ -55,16 +54,14 @@ public class SearchActivity extends AppCompatActivity implements SearchFormFragm
         else {
             animator = ValueAnimator.ofFloat(0.0f, 1.0f);
         }
-        animator.setDuration(1000);  // Duration in milliseconds
+        animator.setDuration(1000);
         animator.setInterpolator(new DecelerateInterpolator(2f));
 
-        // Update the height during the animation
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animator) {
                 // Get the animated value
                 float animatedValue = (float) animator.getAnimatedValue();
-                Log.d("Animated Value", String.valueOf(animatedValue));
                 searchContainerParams.weight = animatedValue;
                 spaceParams.weight = 1.0f - animatedValue;
                 binding.filler.setLayoutParams(spaceParams);

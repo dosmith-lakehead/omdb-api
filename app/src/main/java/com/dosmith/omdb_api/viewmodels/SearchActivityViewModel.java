@@ -46,7 +46,7 @@ public class SearchActivityViewModel extends ViewModel {
                             Repository.addResultsPage(params, ++resultsPage);
                             while (Repository.getActiveReqCount() > 0){
                                 try {
-                                    Thread.sleep(100);
+                                    Thread.sleep(10);
                                 } catch (InterruptedException e) {
                                     throw new RuntimeException(e);
                                 }

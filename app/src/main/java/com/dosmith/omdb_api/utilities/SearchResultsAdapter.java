@@ -1,6 +1,9 @@
 package com.dosmith.omdb_api.utilities;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +23,12 @@ import java.util.List;
 public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdapter.SearchResultViewHolder> {
 
     private List<SearchResult> searchResults;
+    private SearchResultViewHolder.OnItemClickListener listener;
 
     public static class SearchResultViewHolder extends RecyclerView.ViewHolder {
+        public interface OnItemClickListener {
+            void onItemClick(SearchResult searchResult);
+        }
         private final SearchResultBinding binding;
 
         public SearchResultViewHolder(SearchResultBinding binding) {
@@ -38,11 +45,15 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
             if (searchResult.getPosterImg() != null) {
                 binding.imgPoster.setImageBitmap(searchResult.getPosterImg());
             }
+            else {
+
+            }
         }
     }
 
-    public SearchResultsAdapter(List<SearchResult> objects) {
+    public SearchResultsAdapter(List<SearchResult> objects, SearchResultViewHolder.OnItemClickListener listener) {
         this.searchResults = objects;
+        this.listener = listener;
     }
 
     @Override
@@ -54,8 +65,12 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
 
     @Override
     public void onBindViewHolder(SearchResultViewHolder holder, int position) {
+        final SearchResult searchResult = searchResults.get(position);
         SearchResult currentItem = searchResults.get(position);
         holder.bind(currentItem);
+        holder.itemView.setOnClickListener(v->{
+            listener.onItemClick(searchResult);
+        });
     }
 
     @Override

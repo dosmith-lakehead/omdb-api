@@ -4,7 +4,9 @@ import android.graphics.Bitmap;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SearchResult {
+import java.io.Serializable;
+
+public class SearchResult implements Serializable {
 
     // annotations allow GSON to deserialize capitalized JSON into my uncapitalized fields.
     @SerializedName("Title")

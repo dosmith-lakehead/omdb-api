@@ -4,7 +4,9 @@ import android.graphics.Bitmap;
 
 import com.google.gson.annotations.SerializedName;
 
+// Basic model class
 public class MovieDetails {
+    // annotations allow GSON to deserialize capitalized JSON into my uncapitalized fields.
     @SerializedName("Title")
     private String title;
     @SerializedName("Year")

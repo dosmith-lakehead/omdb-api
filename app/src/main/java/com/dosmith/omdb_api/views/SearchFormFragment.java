@@ -38,7 +38,6 @@ public class SearchFormFragment extends Fragment {
     }
 
     public SearchFormFragment() {
-        // Required empty public constructor
     }
 
     public static SearchFormFragment newInstance(String param1, String param2) {
