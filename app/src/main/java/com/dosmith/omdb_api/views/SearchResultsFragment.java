@@ -22,16 +22,11 @@ import com.dosmith.omdb_api.models.SearchResult;
 import com.dosmith.omdb_api.utilities.SearchResultsAdapter;
 import com.dosmith.omdb_api.viewmodels.SearchActivityViewModel;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SearchResultsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+// This fragment will display search results.
+// I've cleverly, even deviously, stacked it behind the search form.
 public class SearchResultsFragment extends Fragment implements SearchResultsAdapter.SearchResultViewHolder.OnItemClickListener {
-
     FragmentSearchResultsBinding binding;
     SearchActivityViewModel viewModel;
-
     SearchResultsAdapter adapter;
 
     public SearchResultsFragment() {
@@ -48,6 +43,7 @@ public class SearchResultsFragment extends Fragment implements SearchResultsAdap
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(SearchActivityViewModel.class);
+        // Instantiate my custom adapter class
         adapter = new SearchResultsAdapter(viewModel.getSearchResults().getValue(), this);
     }
 
@@ -56,14 +52,20 @@ public class SearchResultsFragment extends Fragment implements SearchResultsAdap
                              Bundle savedInstanceState) {
         binding = FragmentSearchResultsBinding.inflate(inflater, container, false);
 
+        // set a layout manager
         binding.rvResults.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
+        // Set the adapter
         binding.rvResults.setAdapter(adapter);
 
+        // Observe changes to searchResults in the viewmodel.
         viewModel.getSearchResults().observe(getViewLifecycleOwner(), items -> {;
+            // update the adapter if they change
             adapter.updateData(viewModel.getSearchResults().getValue());
         });
 
+        // If the user scrolls to the bottom of the results, and there are more
+        // results to get, get them.
         binding.rvResults.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -80,6 +82,7 @@ public class SearchResultsFragment extends Fragment implements SearchResultsAdap
             }
         });
 
+        // IS THAT.... A REFRESH LISTENER?!
         binding.main.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -101,6 +104,8 @@ public class SearchResultsFragment extends Fragment implements SearchResultsAdap
         return binding.getRoot();
     }
 
+    // On clicking on a search result, we're activating the interface to that item in the adapter.
+    // Use it to create an intent and launch the Details activity.
     @Override
     public void onItemClick(SearchResult searchResult) {
         Intent intent = new Intent(this.getContext().getApplicationContext(), DetailsActivity.class);

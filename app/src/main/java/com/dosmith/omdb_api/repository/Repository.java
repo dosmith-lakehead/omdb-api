@@ -3,7 +3,6 @@ package com.dosmith.omdb_api.repository;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Movie;
 import android.widget.ImageView;
 
 import com.android.volley.DefaultRetryPolicy;

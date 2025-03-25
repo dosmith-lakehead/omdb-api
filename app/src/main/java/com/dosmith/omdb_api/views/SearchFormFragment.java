@@ -3,7 +3,6 @@ package com.dosmith.omdb_api.views;
 import android.content.Context;
 import android.os.Bundle;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -12,34 +11,37 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.dosmith.omdb_api.R;
 import com.dosmith.omdb_api.databinding.FragmentSearchFormBinding;
 import com.dosmith.omdb_api.models.SearchResult;
-import com.dosmith.omdb_api.repository.Repository;
 import com.dosmith.omdb_api.viewmodels.SearchActivityViewModel;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+// This fragment holds the search form
 public class SearchFormFragment extends Fragment {
+    // viewbinding
     FragmentSearchFormBinding binding;
+    // viewmodel
     SearchActivityViewModel viewModel;
+    // used in shrinking or growing the form
     boolean maximized = true;
+    // listener to shrink or grow the form
     private SearchShrinkListener shrinkListener;
 
+    // interface for shrinking or growing the form
     public interface SearchShrinkListener {
         void shrinkSearch(boolean shrink);
     }
 
+    // empty constructor
     public SearchFormFragment() {
     }
 
+    // much of this is boilerplate from the create-fragment option
     public static SearchFormFragment newInstance(String param1, String param2) {
         SearchFormFragment fragment = new SearchFormFragment();
         Bundle args = new Bundle();
@@ -55,12 +57,9 @@ public class SearchFormFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof SearchShrinkListener) {
-            shrinkListener = (SearchShrinkListener) context;
-        } else {
-            throw new RuntimeException(context.toString() + " must implement SearchShrinkListener");
-        }
+        shrinkListener = (SearchShrinkListener) context;
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,6 +68,7 @@ public class SearchFormFragment extends Fragment {
 
         viewModel = new ViewModelProvider(requireActivity()).get(SearchActivityViewModel.class);
 
+        // simple adapter for the spinner on my search form
         ArrayAdapter<String> spnAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item){
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -94,7 +94,9 @@ public class SearchFormFragment extends Fragment {
         spnAdapter.add("Series");
         spnAdapter.add("Episodes");
 
+        // On Clicker for my search button
         binding.btnSearch.setOnClickListener(v->{
+            // get the search parameters
             Map<String, String> params = new HashMap<>();
             if(!binding.etTitle.getText().toString().isEmpty()){
                 params.put("s", binding.etTitle.getText().toString());
@@ -115,10 +117,15 @@ public class SearchFormFragment extends Fragment {
                 default:
                     break;
             }
+            // reset certain properties of the viewmodel
             viewModel.reset();
+            // store the params in the viewmodel
             viewModel.storeParams(params);
+            // call the viewmodel method that will query the repository
             viewModel.queryResultsPage();
 
+            // Observe changes to the viewmodel's search results. I'm creating an Observer class
+            // so I can remove it, within its onChanged method.
             Observer<ArrayList<SearchResult>> observer = new Observer<ArrayList<SearchResult>>() {
                 @Override
                 public void onChanged(ArrayList<SearchResult> items) {
@@ -135,6 +142,7 @@ public class SearchFormFragment extends Fragment {
             viewModel.getSearchResults().observe(getViewLifecycleOwner(), observer);
         });
 
+        // back button stuff (shrink form)
         binding.btnBack.setEnabled(false);
         binding.btnBack.setOnClickListener(v->{
             maximized = false;
@@ -143,6 +151,7 @@ public class SearchFormFragment extends Fragment {
             }
         });
 
+        // click on the root stuff (enlarge form)
         binding.getRoot().setOnClickListener(v->{
             if (!maximized){
                 maximized = true;
@@ -152,6 +161,7 @@ public class SearchFormFragment extends Fragment {
             }
         });
 
+        // Observe the message from the viewmodel
         viewModel.getSearchMessage().observe(getViewLifecycleOwner(), v->{
             binding.tvMessage.setText(viewModel.getSearchMessage().getValue());
             int i = 1;

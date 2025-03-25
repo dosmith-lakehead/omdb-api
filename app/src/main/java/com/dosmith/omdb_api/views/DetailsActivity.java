@@ -42,7 +42,9 @@ public class DetailsActivity extends AppCompatActivity {
             return insets;
         });
 
+        // When the ViewModel's movieDetails property changes:
         viewModel.getMovieDetails().observe(this, movieDetails -> {
+            // Display all the info in the view
             if (movieDetails != null) {
                 binding.tvTitle.setText(movieDetails.getTitle());
                 if (movieDetails.getPosterImg() != null){
@@ -72,6 +74,7 @@ public class DetailsActivity extends AppCompatActivity {
                 binding.imdbRating.setText(movieDetails.getMetascore());
                 String votes = "(" + movieDetails.getImdbVotes() + " Votes)";
                 binding.imdbVotes.setText(votes);
+                // ratings gets some special treatment
                 if (movieDetails.getRatings().length > 0){
                     for (Rating rating : movieDetails.getRatings()) {
                         LinearLayout ratingContainer = new LinearLayout(this);
@@ -111,6 +114,9 @@ public class DetailsActivity extends AppCompatActivity {
             }
         });
 
+        // After having set up the view to observe the ViewModel,
+        // all that's left is to get the imdbId from the intent and
+        // use it to query for details.
         Intent intent = getIntent();
         String imdbId = intent.getStringExtra("imdbId");
         viewModel.queryMovieDetails(imdbId);

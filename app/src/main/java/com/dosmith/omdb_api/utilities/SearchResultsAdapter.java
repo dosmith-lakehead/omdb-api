@@ -1,41 +1,43 @@
 package com.dosmith.omdb_api.utilities;
 
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.dosmith.omdb_api.R;
 import com.dosmith.omdb_api.databinding.SearchResultBinding;
 import com.dosmith.omdb_api.models.SearchResult;
 
 import java.util.ArrayList;
 import java.util.List;
+
+// This class makes views for a RecyclerView from SearchResults objects
 public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdapter.SearchResultViewHolder> {
 
+    // The list of SearchResults
     private List<SearchResult> searchResults;
+
+    // The On-Click listener
     private SearchResultViewHolder.OnItemClickListener listener;
 
+    // ViewHolder class
     public static class SearchResultViewHolder extends RecyclerView.ViewHolder {
+        // This interface is used to handle clicks
         public interface OnItemClickListener {
             void onItemClick(SearchResult searchResult);
         }
+
+        // The binding for the view
         private final SearchResultBinding binding;
 
+        // Constructor. Takes a binding and sticks it into a property.
+        // Calls the superconstructor on the root of the binding.
         public SearchResultViewHolder(SearchResultBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
 
+        // bind properties of a SearchResult to the views contained in the viewbinding
         public void bind(SearchResult searchResult){
             binding.etTitle.setText(searchResult.getTitle());
             binding.etYear.setText("Release Year: " + searchResult.getYear());
@@ -51,11 +53,13 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
         }
     }
 
+    // Adapter constructor. take a list of SearchResults and a listener
     public SearchResultsAdapter(List<SearchResult> objects, SearchResultViewHolder.OnItemClickListener listener) {
         this.searchResults = objects;
         this.listener = listener;
     }
 
+    // On creation of a new view holder, pass the binding to the viewholder's constructor.
     @Override
     public SearchResultViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Inflate the binding layout
@@ -63,6 +67,7 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
         return new SearchResultViewHolder(binding);
     }
 
+    // This function gets the appropriate SearchResult object and binds it to the viewholder
     @Override
     public void onBindViewHolder(SearchResultViewHolder holder, int position) {
         final SearchResult searchResult = searchResults.get(position);
@@ -73,11 +78,13 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
         });
     }
 
+    // I'm not sure where this is used if anywhere
     @Override
     public int getItemCount() {
         return searchResults.size();
     }
 
+    // Replace the searchResults list with a new one
     public void updateData(ArrayList<SearchResult> searchResults) {
         this.searchResults.clear();
         this.searchResults.addAll(searchResults);

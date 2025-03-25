@@ -42,32 +42,42 @@ public class SearchActivity extends AppCompatActivity implements SearchFormFragm
         });
     }
 
+    // This fancy little listener shrinks the search fragment. I think it looks neat.
     @Override
     public void shrinkSearch(boolean shrink) {
         LinearLayout.LayoutParams searchContainerParams = (LinearLayout.LayoutParams) binding.searchFormContainer.getLayoutParams();
         LinearLayout.LayoutParams spaceParams = (LinearLayout.LayoutParams) binding.filler.getLayoutParams();
 
+        // I had to learn how to do this. I used web resources. It might be a little messy.
         ValueAnimator animator;
+        // Either go from 1 to 0 or 0 to 1
         if (shrink){
             animator = ValueAnimator.ofFloat(1.0f, 0.0f);
         }
         else {
             animator = ValueAnimator.ofFloat(0.0f, 1.0f);
         }
+        // duration: 1 sec
         animator.setDuration(1000);
+        // This kind of eases the transition. I played with values until it looked right.
         animator.setInterpolator(new DecelerateInterpolator(2f));
 
+        // When the animated value updates:
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animator) {
                 // Get the animated value
                 float animatedValue = (float) animator.getAnimatedValue();
+                // update the weight of the searchContainer so it shrinks (or grows)
                 searchContainerParams.weight = animatedValue;
+                // Update the weight of a space that takes up the rest of the... space
                 spaceParams.weight = 1.0f - animatedValue;
+                // Apply the parameters.
                 binding.filler.setLayoutParams(spaceParams);
                 binding.searchFormContainer.setLayoutParams(searchContainerParams);
             }
         });
+        // GO!
         animator.start();
     }
 }
