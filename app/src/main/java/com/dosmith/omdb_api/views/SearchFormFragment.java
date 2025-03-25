@@ -152,6 +152,11 @@ public class SearchFormFragment extends Fragment {
             }
         });
 
+        viewModel.getSearchMessage().observe(getViewLifecycleOwner(), v->{
+            binding.tvMessage.setText(viewModel.getSearchMessage().getValue());
+            int i = 1;
+        });
+
         return binding.getRoot();
     }
 }

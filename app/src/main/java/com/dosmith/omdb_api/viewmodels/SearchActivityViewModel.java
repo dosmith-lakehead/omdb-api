@@ -21,16 +21,19 @@ public class SearchActivityViewModel extends ViewModel {
     private int resultsPage = 0;
     private boolean allResultsLoaded = false;
     private MutableLiveData<Boolean> addingResults = new MutableLiveData<>(false);
+    private MutableLiveData<String> searchMessage = new MutableLiveData<>();
+
     private Map<String,String> params = new HashMap<>();
 
     public LiveData<Boolean> getAddingResults(){
         return addingResults;
     }
-
     public LiveData<ArrayList<SearchResult>> getSearchResults(){
         return searchResults;
     }
-
+    public LiveData<String> getSearchMessage(){
+        return searchMessage;
+    }
     public void queryResultsPage(){
         if (!(addingResults.getValue() || allResultsLoaded)){
             addingResults.setValue(true);
@@ -57,6 +60,7 @@ public class SearchActivityViewModel extends ViewModel {
                                 searchResults.postValue(tempResults);
                             }
                             addingResults.postValue(false);
+                            searchMessage.postValue(Repository.getSearchMessage());
                         }
                     });
                     Looper.loop();

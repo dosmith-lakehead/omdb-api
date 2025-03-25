@@ -43,7 +43,7 @@ public class Repository {
     private static Context context;
 
     // TODO: use this or remove it
-    private static String searchMessage = "";
+    private static String searchMessage;
 
     // These variables contain the results of the API calls,
     // formatted into instances of my model classes.
@@ -67,6 +67,9 @@ public class Repository {
     }
     public static MovieDetails getMovieDetails(){
         return movieDetails;
+    }
+    public static String getSearchMessage(){
+        return searchMessage;
     }
 
     /**
